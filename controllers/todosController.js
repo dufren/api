@@ -34,9 +34,9 @@ const createNewTodo = asyncHandler(async (req, res) => {
 });
 
 const updateTodo = asyncHandler(async (req, res) => {
-  const { id, title, completed } = req.body;
+  const { id, completed } = req.body;
 
-  if (!id || !title || typeof completed !== "boolean") {
+  if (!id || typeof completed !== "boolean") {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -46,18 +46,17 @@ const updateTodo = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Todo not found" });
   }
 
-  const duplicate = await Todo.findOne({ title }).lean().exec();
+  const duplicate = await Todo.findOne({ id }).lean().exec();
 
   if (duplicate && duplicate?._id.toString() !== id) {
     return res.status(409).json({ message: "Duplicate todo title" });
   }
 
-  todo.title = title;
   todo.completed = completed;
 
   const updatedTodo = await todo.save();
 
-  res.json(`'${updatedTodo.title}' updated`);
+  res.json(`'${updatedTodo.id}' updated`);
 });
 
 const deleteTodo = asyncHandler(async (req, res) => {
