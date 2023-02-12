@@ -46,12 +46,6 @@ const updateTodo = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Todo not found" });
   }
 
-  const duplicate = await Todo.findOne({ id }).lean().exec();
-
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate todo title" });
-  }
-
   todo.completed = completed;
 
   const updatedTodo = await todo.save();
